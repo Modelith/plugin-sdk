@@ -18,8 +18,6 @@
       "Bash(npm run:*)"
     ],
     "ask": [
-      "mcp__github__merge_pull_request",
-      "mcp__github__enable_pr_auto_merge",
       "Bash(gh pr merge:*)"
     ]
   },
@@ -50,6 +48,15 @@
           {
             "type": "command",
             "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/protect-files.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__github__merge_pull_request|mcp__github__enable_pr_auto_merge",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/guard-merge.sh"
           }
         ]
       }
