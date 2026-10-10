@@ -15,6 +15,15 @@ ts=packages/typescript
 step "branch name"
 scripts/check-branch-name.sh
 
+# 依存物・ビルド成果物が Git 管理下に入っていないか（guard-git.sh と同じパターン）
+step "forbidden files"
+FORBIDDEN='(^|/)node_modules/|^target/|^packages/typescript/(dist|schema)/'
+if tracked="$(git ls-files | grep -E "$FORBIDDEN")"; then
+  echo "ERROR: コミットしてはいけないファイルが Git 管理下にあります:" >&2
+  echo "$tracked" | head -20 >&2
+  exit 1
+fi
+
 step "rust: fmt"
 cargo fmt --all -- --check
 

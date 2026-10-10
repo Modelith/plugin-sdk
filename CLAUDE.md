@@ -37,6 +37,9 @@ examples/*.json  ← Rust（serde）と TS（JSON Schema）の両方で検証す
 本体と同じ戦略（[branching-strategy.md](https://github.com/modelith/modelith/blob/main/docs/development/branching-strategy.md)）に従う。
 
 - `main` へ直接 commit / push しない。ブランチ名は `<type>/<topic>`
+- **`main` へのマージ（PR のマージ、auto-merge の有効化を含む）はメンテナの明示的な許可を得てから行う。**
+  許可は PR ごとに取る。過去の許可や他の PR への許可を流用しない。CI がグリーンでも、レビューが済んでいても同じ
+- ステージはパスを明示する（`git add -A` / `.` はフックでブロックされる）。`node_modules`・`target`・ビルド成果物はコミットしない
 - コミット / PR タイトル: `<type>(<scope>): <summary>`。scope: `protocol` / `schema` / `ts` / `harness`
 - リリースは `vMAJOR.MINOR.PATCH` タグ。crate と npm パッケージのバージョンをそろえる
 
@@ -54,7 +57,8 @@ examples/*.json  ← Rust（serde）と TS（JSON Schema）の両方で検証す
 | タイミング | フック | 役割 |
 | --- | --- | --- |
 | セッション開始 | `session-start.sh` | rustfmt/clippy と npm 依存を用意し、現在ブランチを通知 |
-| Bash 実行前 | `guard-git.sh` | main への push・main 上の commit・force-push をブロック |
+| Bash 実行前 | `guard-git.sh` | main への push・main 上の commit・force-push・一括ステージ・禁止ファイルのコミットをブロック |
+| マージ操作前 | `permissions.ask` | PR のマージ・auto-merge の有効化は毎回ユーザーの承認を求める |
 | ファイル編集前 | `protect-files.sh` | 生成物・lock ファイルの直接編集をブロック |
 | ファイル編集後 | `format-rust.sh` | 編集した `.rs` を rustfmt で整形 |
 | 停止前 | `verify-on-stop.sh` | 変更があれば `check.sh --fast` を実行し、失敗なら差し戻し |
